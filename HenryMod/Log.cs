@@ -5,7 +5,7 @@ using System.Security.Permissions;
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
-namespace HenryMod
+namespace CryoLegionnaire
 {
     internal static class Log
     {

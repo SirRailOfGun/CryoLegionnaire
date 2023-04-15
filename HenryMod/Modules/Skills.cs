@@ -3,12 +3,11 @@ using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
-using HenryMod;
+using CryoLegionnaire;
 using UnityEngine;
 
-namespace HenryMod.Modules
+namespace CryoLegionnaire.Modules
 {
-
     internal static class Skills
     {
         #region genericskills
@@ -42,7 +41,7 @@ namespace HenryMod.Modules
 
             skill._skillFamily = newFamily;
 
-            HenryMod.Modules.Content.AddSkillFamily(newFamily);
+            CryoLegionnaire.Modules.Content.AddSkillFamily(newFamily);
             return skill;
         }
         #endregion
@@ -140,7 +139,7 @@ namespace HenryMod.Modules
 
             skillDef.keywordTokens = skillDefInfo.keywordTokens;
 
-            HenryMod.Modules.Content.AddSkillDef(skillDef);
+            CryoLegionnaire.Modules.Content.AddSkillDef(skillDef);
 
 
             return skillDef;

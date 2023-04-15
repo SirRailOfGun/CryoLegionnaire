@@ -1,8 +1,8 @@
-﻿using HenryMod.SkillStates.BaseStates;
+﻿using CryoLegionnaire.SkillStates.BaseStates;
 using RoR2;
 using UnityEngine;
 
-namespace HenryMod.SkillStates
+namespace CryoLegionnaire.SkillStates
 {
     public class SlashCombo : BaseMeleeAttack
     {

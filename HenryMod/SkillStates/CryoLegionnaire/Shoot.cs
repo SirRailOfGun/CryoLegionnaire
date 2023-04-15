@@ -2,7 +2,7 @@
 using RoR2;
 using UnityEngine;
 
-namespace HenryMod.SkillStates
+namespace CryoLegionnaire.SkillStates
 {
     public class Shoot : BaseSkillState
     {

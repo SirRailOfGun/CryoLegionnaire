@@ -1,12 +1,12 @@
 ﻿using BepInEx.Configuration;
-using HenryMod.Modules.Characters;
+using CryoLegionnaire.Modules.Characters;
 using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HenryMod.Modules.Survivors
+namespace CryoLegionnaire.Modules.Survivors
 {
     internal class MyCharacter : SurvivorBase
     {
@@ -14,16 +14,16 @@ namespace HenryMod.Modules.Survivors
         //don't upload to thunderstore without changing this
         public override string prefabBodyName => "Henry";
 
-        public const string HENRY_PREFIX = HenryPlugin.DEVELOPER_PREFIX + "_HENRY_BODY_";
+        public const string CRYO_PREFIX = CryoLegionnaire.DEVELOPER_PREFIX + "_HENRY_BODY_";
 
         //used when registering your survivor's language tokens
-        public override string survivorTokenPrefix => HENRY_PREFIX;
+        public override string survivorTokenPrefix => CRYO_PREFIX;
 
         public override BodyInfo bodyInfo { get; set; } = new BodyInfo
         {
             bodyName = "HenryTutorialBody",
-            bodyNameToken = HENRY_PREFIX + "NAME",
-            subtitleNameToken = HENRY_PREFIX + "SUBTITLE",
+            bodyNameToken = CRYO_PREFIX + "NAME",
+            subtitleNameToken = CRYO_PREFIX + "SUBTITLE",
 
             characterPortrait = Assets.mainAssetBundle.LoadAsset<Texture>("texHenryIcon"),
             bodyColor = Color.white,
@@ -89,7 +89,7 @@ namespace HenryMod.Modules.Survivors
         public override void InitializeSkills()
         {
             Modules.Skills.CreateSkillFamilies(bodyPrefab);
-            string prefix = HenryPlugin.DEVELOPER_PREFIX;
+            string prefix = CryoLegionnaire.DEVELOPER_PREFIX;
 
             #region Primary
             //Creates a skilldef for a typical primary 
@@ -201,7 +201,7 @@ namespace HenryMod.Modules.Survivors
 
             #region DefaultSkin
             //this creates a SkinDef with all default fields
-            SkinDef defaultSkin = Modules.Skins.CreateSkinDef(HENRY_PREFIX + "DEFAULT_SKIN_NAME",
+            SkinDef defaultSkin = Modules.Skins.CreateSkinDef(CRYO_PREFIX + "DEFAULT_SKIN_NAME",
                 Assets.mainAssetBundle.LoadAsset<Sprite>("texMainSkin"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
@@ -221,7 +221,7 @@ namespace HenryMod.Modules.Survivors
             #region MasterySkin
             /*
             //creating a new skindef as we did before
-            SkinDef masterySkin = Modules.Skins.CreateSkinDef(HenryPlugin.DEVELOPER_PREFIX + "_HENRY_BODY_MASTERY_SKIN_NAME",
+            SkinDef masterySkin = Modules.Skins.CreateSkinDef(CryoLegionnaire.DEVELOPER_PREFIX + "_HENRY_BODY_MASTERY_SKIN_NAME",
                 Assets.mainAssetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject,

@@ -1,9 +1,9 @@
-﻿using HenryMod.SkillStates;
-using HenryMod.SkillStates.BaseStates;
+﻿using CryoLegionnaire.SkillStates;
+using CryoLegionnaire.SkillStates.BaseStates;
 using System.Collections.Generic;
 using System;
 
-namespace HenryMod.Modules
+namespace CryoLegionnaire.Modules
 {
     public static class States
     {

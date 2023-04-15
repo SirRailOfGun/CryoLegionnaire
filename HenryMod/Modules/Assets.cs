@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using RoR2.UI;
 using System;
 
-namespace HenryMod.Modules
+namespace CryoLegionnaire.Modules
 {
     internal static class Assets
     {
