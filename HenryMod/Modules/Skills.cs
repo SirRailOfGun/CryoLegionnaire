@@ -3,7 +3,6 @@ using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
-using CryoLegionnaire;
 using UnityEngine;
 
 namespace CryoLegionnaire.Modules
@@ -41,7 +40,8 @@ namespace CryoLegionnaire.Modules
 
             skill._skillFamily = newFamily;
 
-            CryoLegionnaire.Modules.Content.AddSkillFamily(newFamily);
+            //CryoLegionnaire.
+            Modules.Content.AddSkillFamily(newFamily);
             return skill;
         }
         #endregion
@@ -139,7 +139,8 @@ namespace CryoLegionnaire.Modules
 
             skillDef.keywordTokens = skillDefInfo.keywordTokens;
 
-            CryoLegionnaire.Modules.Content.AddSkillDef(skillDef);
+            //CryoLegionnaire.
+            Modules.Content.AddSkillDef(skillDef);
 
 
             return skillDef;
