@@ -1,6 +1,7 @@
 ﻿using EntityStates;
 using RoR2;
 using UnityEngine;
+using R2API;
 
 namespace CryoLegionnaire.SkillStates
 {
@@ -50,36 +51,56 @@ namespace CryoLegionnaire.SkillStates
                     Ray aimRay = base.GetAimRay();
                     base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
 
-                    new BulletAttack
-                    {
-                        bulletCount = 1,
-                        aimVector = aimRay.direction,
-                        origin = aimRay.origin,
-                        damage = Shoot.damageCoefficient * this.damageStat,
-                        damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
-                        falloffModel = BulletAttack.FalloffModel.DefaultBullet,
-                        maxDistance = Shoot.range,
-                        force = Shoot.force,
-                        hitMask = LayerIndex.CommonMasks.bullet,
-                        minSpread = 0f,
-                        maxSpread = 0f,
-                        isCrit = base.RollCrit(),
-                        owner = base.gameObject,
-                        muzzleName = muzzleString,
-                        smartCollision = false,
-                        procChainMask = default(ProcChainMask),
-                        procCoefficient = procCoefficient,
-                        radius = 0.75f,
-                        sniper = false,
-                        stopperMask = LayerIndex.CommonMasks.bullet,
-                        weapon = null,
-                        tracerEffectPrefab = Shoot.tracerEffectPrefab,
-                        spreadPitchScale = 0f,
-                        spreadYawScale = 0f,
-                        queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                        hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                    }.Fire();
+                    BlastAttack cryoBlast = new BlastAttack();
+                    cryoBlast.baseDamage = damageCoefficient;
+                    cryoBlast.AddModdedDamageType(CryoLegionnaire.ChillDamageType);
+                    cryoBlast.radius = 10f;
+                    cryoBlast.position = base.transform.position;
+                    cryoBlast.attacker = base.gameObject;
+                    cryoBlast.teamIndex = TeamComponent.GetObjectTeam(cryoBlast.attacker);
+                    cryoBlast.attackerFiltering = AttackerFiltering.NeverHitSelf;
+                    cryoBlast.Fire();
+
+                    BlastAttack cryoBlastOuter = new BlastAttack();
+                    cryoBlastOuter.baseDamage = 0f;
+                    cryoBlastOuter.AddModdedDamageType(CryoLegionnaire.ChillDamageType);
+                    cryoBlastOuter.radius = 50f;
+                    cryoBlastOuter.position = base.transform.position;
+                    cryoBlastOuter.attacker = base.gameObject;
+                    cryoBlastOuter.teamIndex = TeamComponent.GetObjectTeam(cryoBlast.attacker);
+                    cryoBlastOuter.attackerFiltering = AttackerFiltering.NeverHitSelf;
+                    cryoBlastOuter.Fire();
+
+                    //new BulletAttack
+                    //{
+                    //    bulletCount = 1,
+                    //    aimVector = aimRay.direction,
+                    //    origin = aimRay.origin,
+                    //    damage = Shoot.damageCoefficient * this.damageStat,
+                    //    damageColorIndex = DamageColorIndex.Default,
+                    //    damageType = DamageType.Generic,
+                    //    falloffModel = BulletAttack.FalloffModel.DefaultBullet,
+                    //    maxDistance = Shoot.range,
+                    //    force = Shoot.force,
+                    //    hitMask = LayerIndex.CommonMasks.bullet,
+                    //    minSpread = 0f,
+                    //    maxSpread = 0f,
+                    //    isCrit = base.RollCrit(),
+                    //    owner = base.gameObject,
+                    //    muzzleName = muzzleString,
+                    //    smartCollision = false,
+                    //    procChainMask = default(ProcChainMask),
+                    //    procCoefficient = procCoefficient,
+                    //    radius = 0.75f,
+                    //    sniper = false,
+                    //    stopperMask = LayerIndex.CommonMasks.bullet,
+                    //    weapon = null,
+                    //    tracerEffectPrefab = Shoot.tracerEffectPrefab,
+                    //    spreadPitchScale = 0f,
+                    //    spreadYawScale = 0f,
+                    //    queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
+                    //    hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
+                    //}.Fire();
                 }
             }
         }

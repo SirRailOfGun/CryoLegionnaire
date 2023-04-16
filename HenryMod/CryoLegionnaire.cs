@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using CryoLegionnaire.Modules.Survivors;
+using R2API;
 using R2API.Utils;
 using RoR2;
 using System.Collections.Generic;
@@ -25,21 +26,24 @@ namespace CryoLegionnaire
 
     public class CryoLegionnaire : BaseUnityPlugin
     {
+        public static DamageAPI.ModdedDamageType ChillDamageType = DamageAPI.ReserveDamageType();
         // if you don't change these you're giving permission to deprecate the mod-
         //  please change the names to your own stuff, thanks
         //   this shouldn't even have to be said
-        public const string MODUID = "com.rob.CryoLegionnaire";
+        public const string MODUID = "com.srog.CryoLegionnaire";
         public const string MODNAME = "CryoLegionnaire";
-        public const string MODVERSION = "0.0.0";
+        public const string MODVERSION = "0.0.1";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "SROG";
 
         public static CryoLegionnaire instance;
 
+        public static PluginInfo PInfo { get; private set; }
         private void Awake()
         {
             instance = this;
+            PInfo = Info;
 
             Log.Init(Logger);
             Modules.Assets.Initialize(); // load assets and read config
@@ -62,6 +66,7 @@ namespace CryoLegionnaire
         private void Hook()
         {
             // run hooks here, disabling one is as simple as commenting out the line
+            On.RoR2.HealthComponent.TakeDamage += CustomDamageHandler;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
         }
 
@@ -72,11 +77,71 @@ namespace CryoLegionnaire
             // a simple stat hook, adds armor after stats are recalculated
             if (self)
             {
-                if (self.HasBuff(Modules.Buffs.armorBuff))
+                if (self.HasBuff(Modules.Buffs.chillDebuff))
                 {
-                    self.armor += 300f;
+                    if (self.isBoss)
+                    {
+                        self.moveSpeed = self.baseMoveSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 40);
+                        self.attackSpeed = self.baseAttackSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 40);
+                    }
+                    else
+                    {
+                        self.moveSpeed = self.baseMoveSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 20);
+                        self.attackSpeed = self.baseAttackSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 20);
+                    }
+                    if (self.moveSpeed <= 0)
+                    {
+                        self.moveSpeed = 0;
+                    }
+                    if (self.attackSpeed <= 0)
+                    {
+                        self.attackSpeed = 0;
+                    }
                 }
             }
+        }
+        private static void CustomDamageHandler(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
+        {
+            if (info.HasModdedDamageType(ChillDamageType))
+            {
+                var onHurt = self.body.GetComponent<SetStateOnHurt>();
+                if (onHurt)
+                {
+                    if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) < 50)
+                    {
+                        self.body.AddTimedBuff(Modules.Buffs.chillDebuff, 3f);
+                        if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) >= 20 && onHurt.canBeFrozen)
+                        {
+                            self.body.ClearTimedBuffs(Modules.Buffs.chillDebuff);
+                            onHurt.SetFrozen(10);
+                        }
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+            //if (info.HasModdedDamageType(StunCrownDamageType))
+            //{
+            //    var onHurt = self.body.GetComponent<SetStateOnHurt>();
+            //    if (onHurt)
+            //    {
+            //        onHurt.SetStun(StaticValues.StunCrownStun);
+            //    }
+            //}
+            //if (self.body.HasBuff(Modules.Buffs.lockOnBuff))
+            //{
+            //    info.crit = true;
+            //    self.body.ClearTimedBuffs(Modules.Buffs.lockOnBuff);
+            //}
+            //if (info.HasModdedDamageType(LockOnDamageType))
+            //{
+            //    if (self.body)
+            //    {
+            //        self.body.AddTimedBuff(Modules.Buffs.lockOnBuff, 60f);
+            //    }
+            //}
+            orig(self, info);
         }
     }
 }

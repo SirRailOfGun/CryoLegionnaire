@@ -1,6 +1,7 @@
 ﻿using CryoLegionnaire.SkillStates.BaseStates;
 using RoR2;
 using UnityEngine;
+using R2API;
 
 namespace CryoLegionnaire.SkillStates
 {

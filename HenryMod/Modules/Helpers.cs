@@ -6,6 +6,8 @@ namespace CryoLegionnaire.Modules
     internal static class Helpers
     {
         internal const string agilePrefix = "<style=cIsUtility>Agile.</style> ";
+        internal static string chillPrefix = "<style=cIsUtility>Chilling.</style> ";
+        internal static string heavyPrefix = "<style=cIsUtility>Heavy.</style> ";
 
         internal static string ScepterDescription(string desc)
         {

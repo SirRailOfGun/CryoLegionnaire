@@ -7,6 +7,7 @@ using System.IO;
 using System.Collections.Generic;
 using RoR2.UI;
 using System;
+using Path = System.IO.Path;
 
 namespace CryoLegionnaire.Modules
 {
@@ -27,20 +28,24 @@ namespace CryoLegionnaire.Modules
         internal static AssetBundle mainAssetBundle;
 
         // CHANGE THIS
-        private const string assetbundleName = "myassetbundle";
+        private const string assetbundleName = "cryolegionnaireassets";
         //change this to your project's name if/when you've renamed it
-        private const string csProjName = "HenryMod";
-        
+        private const string csProjName = "CryoLegionnaire";
+        //The direct path to your AssetBundle
+        public static string AssetBundlePath
+        {
+            get
+            {
+                //This returns the path to your assetbundle assuming said bundle is on the same folder as your DLL. If you have your bundle in a folder, you can uncomment the statement below this one.
+                return Path.Combine(Path.GetDirectoryName(CryoLegionnaire.PInfo.Location), assetbundleName);
+                //return Path.Combine(Path.GetDirectoryName(MainClass.PInfo.Location), assetBundleFolder, myBundle);
+            }
+        }
+
         internal static void Initialize()
         {
-            if (assetbundleName == "myassetbundle")
-            {
-                Log.Error("AssetBundle name hasn't been changed. not loading any assets to avoid conflicts");
-                return;
-            }
-
             LoadAssetBundle();
-            LoadSoundbank();
+            //LoadSoundbank();
             PopulateAssets();
         }
 
@@ -48,13 +53,14 @@ namespace CryoLegionnaire.Modules
         {
             try
             {
-                if (mainAssetBundle == null)
-                {
-                    using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{csProjName}.{assetbundleName}"))
-                    {
-                        mainAssetBundle = AssetBundle.LoadFromStream(assetStream);
-                    }
-                }
+                mainAssetBundle = AssetBundle.LoadFromFile(AssetBundlePath);
+                //if (mainAssetBundle == null)
+                //{
+                //    using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{csProjName}.{assetbundleName}"))
+                //    {
+                //        mainAssetBundle = AssetBundle.LoadFromStream(assetStream);
+                //    }
+                //}
             }
             catch (Exception e)
             {

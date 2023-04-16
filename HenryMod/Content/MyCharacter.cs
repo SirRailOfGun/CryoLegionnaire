@@ -64,7 +64,7 @@ namespace CryoLegionnaire.Modules.Survivors
                                                                           //if you have more than one character, easily create a config to enable/disable them like this
         public override ConfigEntry<bool> characterEnabledConfig => null; //Modules.Config.CharacterEnableConfig(bodyName);
 
-        private static UnlockableDef masterySkinUnlockableDef;
+        //private static UnlockableDef masterySkinUnlockableDef;
 
         public override void InitializeCharacter()
         {

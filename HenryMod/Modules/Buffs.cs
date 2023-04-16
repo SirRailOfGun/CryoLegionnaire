@@ -8,6 +8,7 @@ namespace CryoLegionnaire.Modules
     {
         // armor buff gained during roll
         internal static BuffDef armorBuff;
+        internal static BuffDef chillDebuff;
 
         internal static void RegisterBuffs()
         {
@@ -16,6 +17,13 @@ namespace CryoLegionnaire.Modules
                 Color.white, 
                 false, 
                 false);
+
+            chillDebuff = AddNewBuff("CryoChillDebuff",
+                LegacyResourcesAPI.Load<BuffDef>("BuffDefs/HiddenInvincibility").iconSprite,
+                Color.white,
+                true,
+                true);
+            chillDebuff.isCooldown = true;
         }
 
         // simple helper method
