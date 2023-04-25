@@ -34,7 +34,37 @@ namespace CryoLegionnaire.SkillStates
 
             base.OnEnter();
         }
-
+        //private void FireGauntlet(string muzzleString)
+        //{
+        //    Ray aimRay = base.GetAimRay();
+        //    if (base.isAuthority)
+        //    {
+        //        new BulletAttack
+        //        {
+        //            owner = base.gameObject,
+        //            weapon = base.gameObject,
+        //            origin = aimRay.origin,
+        //            aimVector = aimRay.direction,
+        //            minSpread = 0f,
+        //            damage = this.tickDamageCoefficient * this.damageStat,
+        //            force = Flamethrower.force,
+        //            muzzleName = muzzleString,
+        //            hitEffectPrefab = Flamethrower.impactEffectPrefab,
+        //            isCrit = this.isCrit,
+        //            radius = Flamethrower.radius,
+        //            falloffModel = BulletAttack.FalloffModel.None,
+        //            stopperMask = LayerIndex.world.mask,
+        //            procCoefficient = Flamethrower.procCoefficientPerTick,
+        //            maxDistance = this.maxDistance,
+        //            smartCollision = true,
+        //            damageType = (Util.CheckRoll(Flamethrower.ignitePercentChance, base.characterBody.master) ? DamageType.IgniteOnHit : DamageType.Generic)
+        //        }.Fire();
+        //        if (base.characterMotor)
+        //        {
+        //            base.characterMotor.ApplyForce(aimRay.direction * -Flamethrower.recoilForce, false, false);
+        //        }
+        //    }
+        //}
         protected override void PlayAttackAnimation()
         {
             base.PlayAttackAnimation();

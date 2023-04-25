@@ -1,12 +1,13 @@
-﻿using EntityStates;
-using RoR2;
+﻿using RoR2;
 using UnityEngine;
+using EntityStates;
+using R2API;
 
-namespace DuskWing.SkillStates
+namespace CryoLegionnaire.SkillStates
 {
-    public class Shoot : BaseSkillState
+    public class ThermalInversionCannon : BaseState
     {
-        public static float damageCoefficient = 1f;
+        public static float damageCoefficient = Modules.StaticValues.gunDamageCoefficient;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.6f;
         public static float force = 800f;
@@ -18,21 +19,15 @@ namespace DuskWing.SkillStates
         private float fireTime;
         private bool hasFired;
         private string muzzleString;
-
         public override void OnEnter()
         {
             base.OnEnter();
-            this.duration = Shoot.baseDuration / this.attackSpeedStat;
+            this.duration = ThermalInversionCannon.baseDuration / this.attackSpeedStat;
             this.fireTime = 0.2f * this.duration;
             base.characterBody.SetAimTimer(2f);
             this.muzzleString = "Muzzle";
 
             base.PlayAnimation("LeftArm, Override", "ShootGun", "ShootGun.playbackRate", 1.8f);
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
         }
 
         private void Fire()
@@ -48,19 +43,18 @@ namespace DuskWing.SkillStates
                 if (base.isAuthority)
                 {
                     Ray aimRay = base.GetAimRay();
-                    base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
+                    base.AddRecoil(-1f * ThermalInversionCannon.recoil, -2f * ThermalInversionCannon.recoil, -0.5f * ThermalInversionCannon.recoil, 0.5f * ThermalInversionCannon.recoil);
 
-                    new BulletAttack
-                    {
+                    BulletAttack iceBeam = new BulletAttack {
                         bulletCount = 1,
                         aimVector = aimRay.direction,
                         origin = aimRay.origin,
-                        damage = Shoot.damageCoefficient * this.damageStat,
+                        damage = ThermalInversionCannon.damageCoefficient * this.damageStat,
                         damageColorIndex = DamageColorIndex.Default,
                         damageType = DamageType.Generic,
                         falloffModel = BulletAttack.FalloffModel.DefaultBullet,
-                        maxDistance = Shoot.range,
-                        force = Shoot.force,
+                        maxDistance = ThermalInversionCannon.range,
+                        force = ThermalInversionCannon.force,
                         hitMask = LayerIndex.CommonMasks.bullet,
                         minSpread = 0f,
                         maxSpread = 0f,
@@ -74,14 +68,21 @@ namespace DuskWing.SkillStates
                         sniper = false,
                         stopperMask = LayerIndex.CommonMasks.bullet,
                         weapon = null,
-                        tracerEffectPrefab = Shoot.tracerEffectPrefab,
+                        tracerEffectPrefab = ThermalInversionCannon.tracerEffectPrefab,
                         spreadPitchScale = 0f,
                         spreadYawScale = 0f,
                         queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
                         hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                    }.Fire();
+                    };
+                    iceBeam.AddModdedDamageType(CryoLegionnaire.ChillDamageType);
+                    iceBeam.Fire();
                 }
             }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
         }
 
         public override void FixedUpdate()
@@ -102,7 +103,7 @@ namespace DuskWing.SkillStates
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.PrioritySkill;
+            return InterruptPriority.Skill;
         }
     }
 }

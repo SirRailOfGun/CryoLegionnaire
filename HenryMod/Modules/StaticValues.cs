@@ -10,10 +10,16 @@ namespace CryoLegionnaire.Modules
              + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
              + "< ! > Bomb can be used to wipe crowds with ease." + Environment.NewLine + Environment.NewLine;
 
+        internal const float gunDamageCoefficient = 1f;
+        internal const float burstDamageCoefficient = 1.5f;
+        internal const float bashDamageCoefficient = 2f;
+        internal const float slamDamageCoefficient = 4f;
+        internal const float chargeDamageCoefficient = 2f;
+        internal const float frostDamageCoefficient = 1f;
+
+        internal const float executeDamageCoefficient = 6f;
+
         internal const float swordDamageCoefficient = 2.8f;
-
-        internal const float gunDamageCoefficient = 4.2f;
-
-        internal const float bombDamageCoefficient = 16f;
+        internal const float bombDamageCoefficient = 3.5f;
     }
 }

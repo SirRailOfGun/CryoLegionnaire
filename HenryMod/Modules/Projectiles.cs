@@ -12,8 +12,7 @@ namespace CryoLegionnaire.Modules
 
         internal static void RegisterProjectiles()
         {
-            CreateBomb();
-
+            IceBomb();
             AddProjectile(bombPrefab);
         }
 
@@ -22,6 +21,28 @@ namespace CryoLegionnaire.Modules
             Modules.Content.AddProjectilePrefab(projectileToAdd);
         }
 
+        private static void IceBomb()
+        {
+            bombPrefab = CloneProjectilePrefab("CommandoGrenadeProjectile", "IceBombProjectile");
+
+            ProjectileImpactExplosion bombImpactExplosion = bombPrefab.GetComponent<ProjectileImpactExplosion>();
+            InitializeImpactExplosion(bombImpactExplosion);
+
+            bombImpactExplosion.blastRadius = 20f;
+            bombImpactExplosion.destroyOnEnemy = true;
+            bombImpactExplosion.lifetime = 12f;
+            bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
+            //bombImpactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("HenryBombExplosion");
+            bombImpactExplosion.timerAfterImpact = true;
+            bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+
+            DamageAPI.ModdedDamageTypeHolderComponent moddedDamageTypeHolderComponent = bombPrefab.AddComponent<DamageAPI.ModdedDamageTypeHolderComponent>();
+            moddedDamageTypeHolderComponent.Add(CryoLegionnaire.ThreeChillDamageType);
+
+            ProjectileController bombController = bombPrefab.GetComponent<ProjectileController>();
+            if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("HenryBombGhost") != null) bombController.ghostPrefab = CreateGhostPrefab("HenryBombGhost");
+            bombController.startSound = "";
+        }
         private static void CreateBomb()
         {
             bombPrefab = CloneProjectilePrefab("CommandoGrenadeProjectile", "HenryBombProjectile");
@@ -36,6 +57,7 @@ namespace CryoLegionnaire.Modules
             //bombImpactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("HenryBombExplosion");
             bombImpactExplosion.timerAfterImpact = true;
             bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+            //bombImpactExplosion.GetComponent<DamageInfo>().AddModdedDamageType(CryoLegionnaire.ThreeChillDamageType);
 
             ProjectileController bombController = bombPrefab.GetComponent<ProjectileController>();
             if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("HenryBombGhost") != null) bombController.ghostPrefab = CreateGhostPrefab("HenryBombGhost");

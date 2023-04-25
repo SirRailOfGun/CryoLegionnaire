@@ -3,10 +3,11 @@ using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 using R2API;
+using CryoLegionnaire.Modules;
 
 namespace CryoLegionnaire.SkillStates
 {
-    public class ThrowBomb : GenericProjectileBaseState
+    public class ColdFront : GenericProjectileBaseState
     {
 
         public static float BaseDuration = 0.65f;
@@ -14,7 +15,7 @@ namespace CryoLegionnaire.SkillStates
         //ordinarily I recommend not having a delay before projectiles. makes the move feel sluggish
         public static float BaseDelayDuration = 0.35f * BaseDuration;
 
-        public static float DamageCoefficient = 1.6f;
+        public static float DamageCoefficient = StaticValues.bombDamageCoefficient;
 
         public override void OnEnter()
         {

@@ -1,11 +1,14 @@
 ﻿using BepInEx;
 using CryoLegionnaire.Modules.Survivors;
+using CryoLegionnaire.SkillStates;
 using R2API;
 using R2API.Utils;
 using RoR2;
 using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
+using UnityEngine;
+using UnityEngine.Networking;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -16,23 +19,19 @@ namespace CryoLegionnaire
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(MODUID, MODNAME, MODVERSION)]
-    [R2APISubmoduleDependency(new string[]
-    {
-        "PrefabAPI",
-        "LanguageAPI",
-        "SoundAPI",
-        "UnlockableAPI"
-    })]
 
     public class CryoLegionnaire : BaseUnityPlugin
     {
         public static DamageAPI.ModdedDamageType ChillDamageType = DamageAPI.ReserveDamageType();
+        public static DamageAPI.ModdedDamageType ThreeChillDamageType = DamageAPI.ReserveDamageType();
+        public static DamageAPI.ModdedDamageType FiveChillDamageType = DamageAPI.ReserveDamageType();
+        public static DamageAPI.ModdedDamageType ExecuteFrozen = DamageAPI.ReserveDamageType();
         // if you don't change these you're giving permission to deprecate the mod-
         //  please change the names to your own stuff, thanks
         //   this shouldn't even have to be said
         public const string MODUID = "com.srog.CryoLegionnaire";
         public const string MODNAME = "CryoLegionnaire";
-        public const string MODVERSION = "0.0.1";
+        public const string MODVERSION = "0.1.0";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "SROG";
@@ -67,7 +66,35 @@ namespace CryoLegionnaire
         {
             // run hooks here, disabling one is as simple as commenting out the line
             On.RoR2.HealthComponent.TakeDamage += CustomDamageHandler;
+            RecalculateStatsAPI.GetStatCoefficients += UpdateStats;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+        }
+        private void UpdateStats(RoR2.CharacterBody self, RecalculateStatsAPI.StatHookEventArgs args)
+        {
+
+            if (NetworkServer.active)
+            {
+                if (self)
+                {
+                    if (self.HasBuff(Modules.Buffs.chillDebuffTimer))
+                    {
+                        if (self.isBoss)
+                        {
+                            args.moveSpeedReductionMultAdd += self.GetBuffCount(Modules.Buffs.chillDebuff) * .025f;
+                            args.attackSpeedReductionMultAdd += self.GetBuffCount(Modules.Buffs.chillDebuff) * .025f;
+                        }
+                        else
+                        {
+                            args.moveSpeedReductionMultAdd += self.GetBuffCount(Modules.Buffs.chillDebuff) * .05f;
+                            args.attackSpeedReductionMultAdd += self.GetBuffCount(Modules.Buffs.chillDebuff) * .05f;
+                        }
+                    }
+                    else
+                    {
+                        self.SetBuffCount(Modules.Buffs.chillDebuff.buffIndex, 0);
+                    }
+                }
+            }
         }
 
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
@@ -75,72 +102,72 @@ namespace CryoLegionnaire
             orig(self);
 
             // a simple stat hook, adds armor after stats are recalculated
-            if (self)
-            {
-                if (self.HasBuff(Modules.Buffs.chillDebuff))
-                {
-                    if (self.isBoss)
-                    {
-                        self.moveSpeed = self.baseMoveSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 40);
-                        self.attackSpeed = self.baseAttackSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 40);
-                    }
-                    else
-                    {
-                        self.moveSpeed = self.baseMoveSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 20);
-                        self.attackSpeed = self.baseAttackSpeed * (self.GetBuffCount(Modules.Buffs.chillDebuff) / 20);
-                    }
-                    if (self.moveSpeed <= 0)
-                    {
-                        self.moveSpeed = 0;
-                    }
-                    if (self.attackSpeed <= 0)
-                    {
-                        self.attackSpeed = 0;
-                    }
-                }
-            }
         }
         private static void CustomDamageHandler(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
         {
+            if (info.HasModdedDamageType(ExecuteFrozen))
+            {
+                Debug.LogWarning(info.HasModdedDamageType(ExecuteFrozen));
+                if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) >= 20 || self.isInFrozenState)
+                {
+                    Debug.LogWarning(self.body.GetBuffCount(Modules.Buffs.chillDebuff) >= 20);
+                    Debug.LogWarning(self.isInFrozenState);
+                    GameObject attacker = info.attacker;
+                    BlastAttack execute = new BlastAttack
+                    {
+                        attacker = attacker.gameObject,
+                        baseDamage = attacker.GetComponent<CharacterBody>().baseDamage * Modules.StaticValues.executeDamageCoefficient,
+                        baseForce = 0f,
+                        crit = false,
+                        damageType = DamageType.Generic,
+                        falloffModel = BlastAttack.FalloffModel.None,
+                        procCoefficient = 1f,
+                        radius = 5f,
+                        position = self.transform.position,
+                        attackerFiltering = AttackerFiltering.NeverHitSelf,
+                        //impactEffect = EffectCatalog.FindEffectIndexFromPrefab(this.blastImpactEffectPrefab),
+                        teamIndex = attacker.GetComponent<CharacterBody>().teamComponent.teamIndex
+                    };
+                    execute.Fire();
+                }
+            }
             if (info.HasModdedDamageType(ChillDamageType))
             {
-                var onHurt = self.body.GetComponent<SetStateOnHurt>();
-                if (onHurt)
+                ApplyChill(orig, self, info);
+            }
+            if (info.HasModdedDamageType(ThreeChillDamageType))
+            {
+                for (int i = 0; i < 3; i++)
                 {
-                    if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) < 50)
+                    ApplyChill(orig, self, info);
+                }
+            }
+            if (info.HasModdedDamageType(FiveChillDamageType))
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    ApplyChill(orig, self, info);
+                }
+            }
+            orig(self, info);
+        }
+        private static void ApplyChill(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
+        {
+            if (NetworkServer.active)
+            {
+                self.body.AddTimedBuff(Modules.Buffs.chillDebuffTimer, 5f);
+                var onHurt = self.body.GetComponent<SetStateOnHurt>();
+                if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) < 50)
+                {
+                    self.body.AddBuff(Modules.Buffs.chillDebuff);
+                    if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) >= 20 && onHurt.canBeFrozen)
                     {
-                        self.body.AddTimedBuff(Modules.Buffs.chillDebuff, 3f);
-                        if (self.body.GetBuffCount(Modules.Buffs.chillDebuff) >= 20 && onHurt.canBeFrozen)
-                        {
-                            self.body.ClearTimedBuffs(Modules.Buffs.chillDebuff);
-                            onHurt.SetFrozen(10);
-                        }
-                    }
-                    else
-                    {
+                        self.body.SetBuffCount(Modules.Buffs.chillDebuff.buffIndex, 0);
+                        self.body.ClearTimedBuffs(Modules.Buffs.chillDebuffTimer);
+                        onHurt.SetFrozen(5);
                     }
                 }
             }
-            //if (info.HasModdedDamageType(StunCrownDamageType))
-            //{
-            //    var onHurt = self.body.GetComponent<SetStateOnHurt>();
-            //    if (onHurt)
-            //    {
-            //        onHurt.SetStun(StaticValues.StunCrownStun);
-            //    }
-            //}
-            //if (self.body.HasBuff(Modules.Buffs.lockOnBuff))
-            //{
-            //    info.crit = true;
-            //    self.body.ClearTimedBuffs(Modules.Buffs.lockOnBuff);
-            //}
-            //if (info.HasModdedDamageType(LockOnDamageType))
-            //{
-            //    if (self.body)
-            //    {
-            //        self.body.AddTimedBuff(Modules.Buffs.lockOnBuff, 60f);
-            //    }
-            //}
             orig(self, info);
         }
     }

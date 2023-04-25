@@ -80,10 +80,13 @@ namespace CryoLegionnaire.Modules.Survivors
         public override void InitializeHitboxes()
         {
             ChildLocator childLocator = bodyPrefab.GetComponentInChildren<ChildLocator>();
+            Transform hitboxTransform;
 
             //example of how to create a hitbox
-            //Transform hitboxTransform = childLocator.FindChild("SwordHitbox");
+            //hitboxTransform = childLocator.FindChild("SwordHitbox");
             //Modules.Prefabs.SetupHitbox(prefabCharacterModel.gameObject, hitboxTransform, "Sword");
+            hitboxTransform = childLocator.FindChild("ChargeHitbox");
+            Modules.Prefabs.SetupHitbox(prefabCharacterModel.gameObject, hitboxTransform, "Charge");
         }
 
         public override void InitializeSkills()
@@ -93,28 +96,46 @@ namespace CryoLegionnaire.Modules.Survivors
 
             #region Primary
             //Creates a skilldef for a typical primary 
-            SkillDef primarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo(prefix + "_HENRY_BODY_PRIMARY_SLASH_NAME",
-                                                                                      prefix + "_HENRY_BODY_PRIMARY_SLASH_DESCRIPTION",
-                                                                                      Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
-                                                                                      new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)),
-                                                                                      "Weapon",
-                                                                                      true));
+            SkillDef ThermalInversionCannonDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_CRYO_BODY_PRIMARY_BEAM_NAME",
+                skillNameToken = prefix + "_CRYO_BODY_PRIMARY_BEAM_NAME",
+                skillDescriptionToken = prefix + "_CRYO_BODY_PRIMARY_BEAM_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThermalInversionCannon)),
+                activationStateMachineName = "Weapon",
+                cancelSprintingOnActivation = true,
+                keywordTokens = new string[] { "KEYWORD_CHILL" }
+            });
 
+            SkillDef primarySkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_CRYO_BODY_PRIMARY_SLASH_NAME",
+                skillNameToken = prefix + "_CRYO_BODY_PRIMARY_SLASH_NAME",
+                skillDescriptionToken = prefix + "_CRYO_BODY_PRIMARY_SLASH_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Icethrower)),
+                activationStateMachineName = "Weapon",
+                cancelSprintingOnActivation = true,
+                keywordTokens = new string[] { "KEYWORD_CHILL" }
+            });
 
             Modules.Skills.AddPrimarySkills(bodyPrefab, primarySkillDef);
+
+            Modules.Skills.AddPrimarySkills(bodyPrefab, ThermalInversionCannonDef);
             #endregion
 
             #region Secondary
             SkillDef shootSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_HENRY_BODY_SECONDARY_GUN_NAME",
-                skillNameToken = prefix + "_HENRY_BODY_SECONDARY_GUN_NAME",
-                skillDescriptionToken = prefix + "_HENRY_BODY_SECONDARY_GUN_DESCRIPTION",
+                skillName = prefix + "_CRYO_BODY_SECONDARY_GUN_NAME",
+                skillNameToken = prefix + "_CRYO_BODY_SECONDARY_GUN_NAME",
+                skillDescriptionToken = prefix + "_CRYO_BODY_SECONDARY_GUN_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ChillOut)),
                 activationStateMachineName = "Slide",
                 baseMaxStock = 1,
-                baseRechargeInterval = 1f,
+                baseRechargeInterval = 5f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -123,11 +144,11 @@ namespace CryoLegionnaire.Modules.Survivors
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = true,
                 mustKeyPress = false,
-                cancelSprintingOnActivation = false,
+                cancelSprintingOnActivation = true,
                 rechargeStock = 1,
                 requiredStock = 1,
                 stockToConsume = 1,
-                keywordTokens = new string[] { "KEYWORD_AGILE" }
+                keywordTokens = new string[] { "KEYWORD_CHILL5" }
             });
 
             Modules.Skills.AddSecondarySkills(bodyPrefab, shootSkillDef);
@@ -136,11 +157,11 @@ namespace CryoLegionnaire.Modules.Survivors
             #region Utility
             SkillDef rollSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_HENRY_BODY_UTILITY_ROLL_NAME",
-                skillNameToken = prefix + "_HENRY_BODY_UTILITY_ROLL_NAME",
-                skillDescriptionToken = prefix + "_HENRY_BODY_UTILITY_ROLL_DESCRIPTION",
+                skillName = prefix + "_CRYO_BODY_UTILITY_CHARGE_NAME",
+                skillNameToken = prefix + "_CRYO_BODY_UTILITY_CHARGE_NAME",
+                skillDescriptionToken = prefix + "_CRYO_BODY_UTILITY_CHARGE_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texUtilityIcon"),
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Roll)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ShoulderBash)),
                 activationStateMachineName = "Body",
                 baseMaxStock = 1,
                 baseRechargeInterval = 4f,
@@ -155,8 +176,36 @@ namespace CryoLegionnaire.Modules.Survivors
                 cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 1,
+                keywordTokens = new string[] { "KEYWORD_EXECUTE" }
             });
+
+            SkillDef jumpSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "_CRYO_BODY_UTILITY_JUMP_NAME",
+                skillNameToken = prefix + "_CRYO_BODY_UTILITY_JUMP_NAME",
+                skillDescriptionToken = prefix + "_CRYO_BODY_UTILITY_JUMP_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texUtilityIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Avalanche)),
+                activationStateMachineName = "Body",
+                baseMaxStock = 1,
+                baseRechargeInterval = 4f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = true,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+                keywordTokens = new string[] { "KEYWORD_HEAVY" }
+            });
+
+            Modules.Skills.AddUtilitySkills(bodyPrefab, jumpSkillDef);
 
             Modules.Skills.AddUtilitySkills(bodyPrefab, rollSkillDef);
             #endregion
@@ -164,9 +213,9 @@ namespace CryoLegionnaire.Modules.Survivors
             #region Special
             SkillDef bombSkillDef = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = prefix + "_HENRY_BODY_SPECIAL_BOMB_NAME",
-                skillNameToken = prefix + "_HENRY_BODY_SPECIAL_BOMB_NAME",
-                skillDescriptionToken = prefix + "_HENRY_BODY_SPECIAL_BOMB_DESCRIPTION",
+                skillName = prefix + "_CRYO_BODY_SPECIAL_BOMB_NAME",
+                skillNameToken = prefix + "_CRYO_BODY_SPECIAL_BOMB_NAME",
+                skillDescriptionToken = prefix + "_CRYO_BODY_SPECIAL_BOMB_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("texSpecialIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
                 activationStateMachineName = "Slide",
@@ -183,7 +232,8 @@ namespace CryoLegionnaire.Modules.Survivors
                 cancelSprintingOnActivation = true,
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 1
+                stockToConsume = 1,
+                keywordTokens = new string[] { "KEYWORD_CHILL3" }
             });
 
             Modules.Skills.AddSpecialSkills(bodyPrefab, bombSkillDef);

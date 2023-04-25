@@ -1,12 +1,13 @@
 ﻿using EntityStates;
 using RoR2;
 using UnityEngine;
+using R2API;
 
-namespace DuskWing.SkillStates
+namespace CryoLegionnaire.SkillStates
 {
-    public class Shoot : BaseSkillState
+    public class ChillOut : BaseSkillState
     {
-        public static float damageCoefficient = 1f;
+        public static float damageCoefficient = Modules.StaticValues.burstDamageCoefficient;
         public static float procCoefficient = 1f;
         public static float baseDuration = 0.6f;
         public static float force = 800f;
@@ -22,7 +23,7 @@ namespace DuskWing.SkillStates
         public override void OnEnter()
         {
             base.OnEnter();
-            this.duration = Shoot.baseDuration / this.attackSpeedStat;
+            this.duration = ChillOut.baseDuration / this.attackSpeedStat;
             this.fireTime = 0.2f * this.duration;
             base.characterBody.SetAimTimer(2f);
             this.muzzleString = "Muzzle";
@@ -48,38 +49,30 @@ namespace DuskWing.SkillStates
                 if (base.isAuthority)
                 {
                     Ray aimRay = base.GetAimRay();
-                    base.AddRecoil(-1f * Shoot.recoil, -2f * Shoot.recoil, -0.5f * Shoot.recoil, 0.5f * Shoot.recoil);
+                    base.AddRecoil(-1f * ChillOut.recoil, -2f * ChillOut.recoil, -0.5f * ChillOut.recoil, 0.5f * ChillOut.recoil);
 
-                    new BulletAttack
-                    {
-                        bulletCount = 1,
-                        aimVector = aimRay.direction,
-                        origin = aimRay.origin,
-                        damage = Shoot.damageCoefficient * this.damageStat,
-                        damageColorIndex = DamageColorIndex.Default,
-                        damageType = DamageType.Generic,
-                        falloffModel = BulletAttack.FalloffModel.DefaultBullet,
-                        maxDistance = Shoot.range,
-                        force = Shoot.force,
-                        hitMask = LayerIndex.CommonMasks.bullet,
-                        minSpread = 0f,
-                        maxSpread = 0f,
-                        isCrit = base.RollCrit(),
-                        owner = base.gameObject,
-                        muzzleName = muzzleString,
-                        smartCollision = false,
-                        procChainMask = default(ProcChainMask),
-                        procCoefficient = procCoefficient,
-                        radius = 0.75f,
-                        sniper = false,
-                        stopperMask = LayerIndex.CommonMasks.bullet,
-                        weapon = null,
-                        tracerEffectPrefab = Shoot.tracerEffectPrefab,
-                        spreadPitchScale = 0f,
-                        spreadYawScale = 0f,
-                        queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
-                        hitEffectPrefab = EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
-                    }.Fire();
+                    BlastAttack cryoBlast = new BlastAttack();
+                    cryoBlast.baseDamage = damageCoefficient * this.damageStat;
+                    cryoBlast.AddModdedDamageType(CryoLegionnaire.ThreeChillDamageType);
+                    cryoBlast.procCoefficient = 1f;
+                    cryoBlast.radius = 17f;
+                    cryoBlast.baseForce = 50f;
+                    cryoBlast.position = base.transform.position;
+                    cryoBlast.attacker = base.gameObject;
+                    cryoBlast.teamIndex = TeamComponent.GetObjectTeam(cryoBlast.attacker);
+                    cryoBlast.attackerFiltering = AttackerFiltering.NeverHitSelf;
+                    cryoBlast.Fire();
+
+                    BlastAttack cryoBlastOuter = new BlastAttack();
+                    cryoBlastOuter.baseDamage = 0f;
+                    cryoBlastOuter.procCoefficient = 0f;
+                    cryoBlastOuter.AddModdedDamageType(CryoLegionnaire.FiveChillDamageType);
+                    cryoBlastOuter.radius = 34f;
+                    cryoBlastOuter.position = base.transform.position;
+                    cryoBlastOuter.attacker = base.gameObject;
+                    cryoBlastOuter.teamIndex = TeamComponent.GetObjectTeam(cryoBlast.attacker);
+                    cryoBlastOuter.attackerFiltering = AttackerFiltering.NeverHitSelf;
+                    cryoBlastOuter.Fire();
                 }
             }
         }

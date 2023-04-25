@@ -8,8 +8,6 @@ namespace CryoLegionnaire.Modules
         internal static void AddTokens()
         {
             #region Henry
-            //string prefix = CryoLegionnaire.DEVELOPER_PREFIX + "_HENRY_BODY_";
-
             //string desc = "Henry is a skilled fighter who makes use of a wide arsenal of weaponry to take down his foes.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
             //desc = desc + "< ! > Sword is a good all-rounder while Boxing Gloves are better for laying a beatdown on more powerful foes." + Environment.NewLine + Environment.NewLine;
             //desc = desc + "< ! > Pistol is a powerful anti air, with its low cooldown and high damage." + Environment.NewLine + Environment.NewLine;
@@ -82,6 +80,13 @@ namespace CryoLegionnaire.Modules
             LanguageAPI.Add(prefix + "OUTRO_FLAVOR", outro);
             LanguageAPI.Add(prefix + "OUTRO_FAILURE", outroFailure);
 
+            #region Keywords
+            LanguageAPI.Add("KEYWORD_CHILL", "[ Chill ]\nApplies a stack of chill on hit, slowing enemies by 5% per stack, and freezing at 20 stacks.\nBosses are slowed half as much");
+            LanguageAPI.Add("KEYWORD_CHILL3", "[ Chill ]\nApplies three stacks of chill on hit, slowing enemies by 5% per stack, and freezing at 20 stacks.\nBosses are slowed half as much");
+            LanguageAPI.Add("KEYWORD_CHILL5", "[ Chill ]\nApplies five stacks of chill on hit, slowing enemies by 5% per stack, and freezing at 20 stacks.\nBosses are slowed half as much");
+            LanguageAPI.Add("KEYWORD_EXECUTE", $"[ Execute ]\nDeal an addtional <style=cIsDamage>{100f * Modules.StaticValues.executeDamageCoefficient}% damage</style> hit in a small area.");
+            #endregion
+
             #region Skins
             LanguageAPI.Add(prefix + "DEFAULT_SKIN_NAME", "Default");
             LanguageAPI.Add(prefix + "MASTERY_SKIN_NAME", "Alternate");
@@ -89,22 +94,28 @@ namespace CryoLegionnaire.Modules
 
             #region Passive
             LanguageAPI.Add(prefix + "PASSIVE_NAME", "Chill");
-            LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", "Cryo Legionnaire's attacks apply chill, which slows enemies by 5% per stack. Chill will freeze foes at 20 stacks, and has half strength against bosses.");
+            LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", "Cryo Legionnaire's attacks apply chill, which slows enemies by 5% per stack, and has half strength against bosses. Chill will freeze foes at 20 stacks.");
             #endregion
 
             #region Primary
+            LanguageAPI.Add(prefix + "PRIMARY_BEAM_NAME", "Thermal Inversion Cannon");
+            LanguageAPI.Add(prefix + "PRIMARY_BEAM_DESCRIPTION", Helpers.chillPrefix + $"Fire a laser for <style=cIsDamage>{100f * StaticValues.gunDamageCoefficient}% damage</style>.");
+
             LanguageAPI.Add(prefix + "PRIMARY_SLASH_NAME", "Cryo Cannon");
             LanguageAPI.Add(prefix + "PRIMARY_SLASH_DESCRIPTION", Helpers.chillPrefix + $"Sweep your cryocannon forwards for <style=cIsDamage>{100f * StaticValues.swordDamageCoefficient}% damage</style>.");
             #endregion
 
             #region Secondary
             LanguageAPI.Add(prefix + "SECONDARY_GUN_NAME", "Chill Out!");
-            LanguageAPI.Add(prefix + "SECONDARY_GUN_DESCRIPTION", Helpers.chillPrefix + $"Erupt in a burst of extreme cold, Chilling enemies in a wide are. Nearby enemies are hit again for <style=cIsDamage>{100f * StaticValues.gunDamageCoefficient}% damage</style> and chilled again.");
+            LanguageAPI.Add(prefix + "SECONDARY_GUN_DESCRIPTION", Helpers.chillPrefix + $"Erupt in a burst of extreme cold, Chilling enemies five times in a wide area. Nearby enemies are hit again for <style=cIsDamage>{100f * StaticValues.burstDamageCoefficient}% damage</style> and chilled thrice more.");
             #endregion
 
             #region Utility
-            LanguageAPI.Add(prefix + "UTILITY_ROLL_NAME", "Avalanche");
-            LanguageAPI.Add(prefix + "UTILITY_ROLL_DESCRIPTION", Helpers.heavyPrefix + "Launch yourself high into the air and become immune to the fall. Damage foes near the landing zone.");
+            LanguageAPI.Add(prefix + "UTILITY_CHARGE_NAME", "Icebreaker");
+            LanguageAPI.Add(prefix + "UTILITY_CHARGE_DESCRIPTION", $"Crash through foes, dealing <style=cIsDamage>{100f * StaticValues.bashDamageCoefficient}% damage</style> and <style=cIsDamage>executing</style> frozen foes");
+
+            LanguageAPI.Add(prefix + "UTILITY_JUMP_NAME", "Avalanche");
+            LanguageAPI.Add(prefix + "UTILITY_JUMP_DESCRIPTION", Helpers.heavyPrefix + "Launch yourself high into the air and become immune to the fall. Damage foes near the landing zone.");
             #endregion
 
             #region Special

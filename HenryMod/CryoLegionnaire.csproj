@@ -18,15 +18,40 @@
     <None Remove="myassetbundle" />
   </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="BepInEx.Core" Version="5.4.19" />
-		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.1-r.1" />
-		<PackageReference Include="UnityEngine.Modules" Version="2019.4.26" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+	<PackageReference Include="R2API.Colors" Version="1.0.0" />
+	<PackageReference Include="R2API.CommandHelper" Version="1.0.0" />
+	<PackageReference Include="R2API.ContentManagement" Version="1.0.1" />
+    <PackageReference Include="R2API.Core" Version="5.0.6" />
+	<PackageReference Include="R2API.DamageType" Version="1.0.3" />
+	<PackageReference Include="R2API.Deployable" Version="1.0.0" />
+	<PackageReference Include="R2API.Difficulty" Version="1.0.2" />
+	<PackageReference Include="R2API.Director" Version="1.0.0" />
+	<PackageReference Include="R2API.Dot" Version="1.0.0" />
+	<PackageReference Include="R2API.Elites" Version="1.0.1" />
+    <PackageReference Include="R2API.Items" Version="1.0.1" />
+    <PackageReference Include="R2API.Language" Version="1.0.0" />
+	<PackageReference Include="R2API.Loadout" Version="1.0.1" />
+	<PackageReference Include="R2API.LobbyConfig" Version="1.0.0" />
+	<PackageReference Include="R2API.Networking" Version="1.0.2" />
+	<PackageReference Include="R2API.Orb" Version="1.0.0" />
+    <PackageReference Include="R2API.Prefab" Version="1.0.1" />
+    <PackageReference Include="R2API.RecalculateStats" Version="1.2.0" />
+	<PackageReference Include="R2API.SceneAsset" Version="1.0.0" />
+    <PackageReference Include="R2API.Sound" Version="1.0.0" />
+	<PackageReference Include="R2API.TempVisualEffect" Version="1.0.0" />
+	<PackageReference Include="R2API.Unlockable" Version="1.0.0" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.4-r.0" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.26" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2022.9.20">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+  </ItemGroup>
 	
   <ItemGroup>
     <EmbeddedResource Include="CryoLegionnaire.bnk" />
@@ -34,16 +59,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="R2API">
-      <HintPath>..\libs\R2API.dll</HintPath>
-    </Reference>
     <Reference Include="MMHOOK_RoR2">
       <HintPath>..\libs\MMHOOK_RoR2.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if &quot;$(Username)&quot; == &quot;Michael&quot; copy &quot;$(TargetPath)&quot; &quot;C:\Users\Michael\AppData\Roaming\Thunderstore Mod Manager\DataFolder\RiskOfRain2\profiles\Mod Dev\BepInEx\plugins\CryoLegionnaire\&quot;" />
+    <Exec Command="if &quot;$(Username)&quot; == &quot;$(Username)&quot; copy &quot;$(TargetPath)&quot; &quot;C:\Users\Michael\AppData\Roaming\Thunderstore Mod Manager\DataFolder\RiskOfRain2\profiles\Mod Dev\BepInEx\plugins\CryoLegionnaire\&quot;" />
   </Target>
 
 </Project>

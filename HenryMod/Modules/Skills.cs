@@ -22,6 +22,11 @@ namespace CryoLegionnaire.Modules
 
             SkillLocator skillLocator = targetPrefab.GetComponent<SkillLocator>();
 
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = "SROG_CRYO_BODY_PASSIVE_NAME";
+            skillLocator.passiveSkill.skillDescriptionToken = "SROG_CRYO_BODY_PASSIVE_DESCRIPTION";
+            skillLocator.passiveSkill.icon = Assets.mainAssetBundle.LoadAsset<Sprite>("texPassiveIcon");
+
             skillLocator.primary = CreateGenericSkillWithSkillFamily(targetPrefab, "Primary");
             skillLocator.secondary = CreateGenericSkillWithSkillFamily(targetPrefab, "Secondary");
             skillLocator.utility = CreateGenericSkillWithSkillFamily(targetPrefab, "Utility");

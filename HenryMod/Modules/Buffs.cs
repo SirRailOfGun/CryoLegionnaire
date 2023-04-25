@@ -1,6 +1,7 @@
 ﻿using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
+using R2API;
 
 namespace CryoLegionnaire.Modules
 {
@@ -9,6 +10,7 @@ namespace CryoLegionnaire.Modules
         // armor buff gained during roll
         internal static BuffDef armorBuff;
         internal static BuffDef chillDebuff;
+        internal static BuffDef chillDebuffTimer;
 
         internal static void RegisterBuffs()
         {
@@ -19,11 +21,15 @@ namespace CryoLegionnaire.Modules
                 false);
 
             chillDebuff = AddNewBuff("CryoChillDebuff",
-                LegacyResourcesAPI.Load<BuffDef>("BuffDefs/HiddenInvincibility").iconSprite,
+                LegacyResourcesAPI.Load<BuffDef>("BuffDefs/Overheat").iconSprite,
                 Color.white,
                 true,
                 true);
-            chillDebuff.isCooldown = true;
+            chillDebuffTimer = AddNewBuff("CryoChillDebuff",
+                new Sprite(),
+                Color.white,
+                false,
+                true);
         }
 
         // simple helper method
